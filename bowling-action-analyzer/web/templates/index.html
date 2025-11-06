@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bowling Action Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Welcome to the Bowling Action Analyzer</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Analyze Your Bowling Action</h2>
+            <p>Upload your bowling videos and get insights into your technique.</p>
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <input type="file" name="video" accept="video/*" required>
+                <button type="submit">Upload Video</button>
+            </form>
+        </section>
+        <section>
+            <h2>Results</h2>
+            <div id="results">
+                <!-- Results will be displayed here -->
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2023 Bowling Action Analyzer</p>
+    </footer>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>
