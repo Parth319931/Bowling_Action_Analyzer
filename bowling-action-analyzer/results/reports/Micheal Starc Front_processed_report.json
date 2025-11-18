@@ -1,0 +1,40 @@
+{
+  "video_name": "Micheal Starc Front_processed",
+  "csv_path": "data/keypoints/front_view/Micheal Starc Front_processed_keypoints.csv",
+  "timestamp": "2025-11-07T17:41:33.442234",
+  "status": "success",
+  "events": {
+    "jump_frame": 4,
+    "back_foot_contact_frame": 15,
+    "front_foot_contact_frame": 32,
+    "ball_release_frame": 44
+  },
+  "phases": {
+    "run_up": [
+      0,
+      4
+    ],
+    "jump_phase": [
+      4,
+      15
+    ],
+    "delivery_stride": [
+      15,
+      32
+    ],
+    "release_phase": [
+      32,
+      44
+    ],
+    "follow_through": [
+      44,
+      449
+    ]
+  },
+  "key_angles": {
+    "elbow_at_release": 156.8820833368858,
+    "knee_at_ffc": 175.99330312223157,
+    "knee_at_bfc": 174.03078935646963
+  },
+  "durations": {
+    "jump_to_bfc": 

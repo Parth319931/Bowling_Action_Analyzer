@@ -1,0 +1,42 @@
+{
+  "video_name": "Side Adam Milne_processed",
+  "num_frames": 469,
+  "events": {
+    "jump_frame": 91,
+    "back_foot_contact_frame": 360,
+    "front_foot_contact_frame": 455,
+    "ball_release_frame": 467
+  },
+  "durations": {
+    "jump_to_bfc": 269,
+    "bfc_to_ffc": 95,
+    "ffc_to_release": 12
+  },
+  "key_angles": {
+    "elbow_at_release": 105.31106899149825,
+    "knee_at_ffc": 52.52395136979513,
+    "knee_at_bfc": 124.51625564335643
+  },
+  "phases": {
+    "run_up": [
+      0,
+      91
+    ],
+    "jump_phase": [
+      91,
+      360
+    ],
+    "delivery_stride": [
+      360,
+      455
+    ],
+    "release_phase": [
+      455,
+      467
+    ],
+    "follow_through": [
+      467,
+      469
+    ]
+  }
+}

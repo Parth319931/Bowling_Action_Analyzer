@@ -1,0 +1,40 @@
+{
+  "video_name": "Front Lockie Ferguson 2_processed",
+  "csv_path": "data/keypoints/front_view/Front Lockie Ferguson 2_processed_keypoints.csv",
+  "timestamp": "2025-11-07T17:41:36.036186",
+  "status": "success",
+  "events": {
+    "jump_frame": 1,
+    "back_foot_contact_frame": 11,
+    "front_foot_contact_frame": 32,
+    "ball_release_frame": 37
+  },
+  "phases": {
+    "run_up": [
+      0,
+      1
+    ],
+    "jump_phase": [
+      1,
+      11
+    ],
+    "delivery_stride": [
+      11,
+      32
+    ],
+    "release_phase": [
+      32,
+      37
+    ],
+    "follow_through": [
+      37,
+      321
+    ]
+  },
+  "key_angles": {
+    "elbow_at_release": 138.37696025190456,
+    "knee_at_ffc": 178.17247971941327,
+    "knee_at_bfc": 172.37108880000218
+  },
+  "durations": {
+    "jump_to_bfc": 

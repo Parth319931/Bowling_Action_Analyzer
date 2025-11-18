@@ -1,0 +1,47 @@
+{
+  "timestamp": "2025-11-07T17:41:37.923869",
+  "keypoints_directory": "data/keypoints/front_view",
+  "total_videos": 18,
+  "successful": 0,
+  "failed": 18,
+  "results": [
+    {
+      "video_name": "Beautiful front on bowling action \ud83d\udc4c [uEbJYBAbPRs]_processed",
+      "csv_path": "data/keypoints/front_view/Beautiful front on bowling action \ud83d\udc4c [uEbJYBAbPRs]_processed_keypoints.csv",
+      "timestamp": "2025-11-07T17:41:31.353292",
+      "status": "failed",
+      "events": {
+        "jump_frame": 7,
+        "back_foot_contact_frame": 36,
+        "front_foot_contact_frame": 56,
+        "ball_release_frame": 61
+      },
+      "phases": {
+        "run_up": [
+          0,
+          7
+        ],
+        "jump_phase": [
+          7,
+          36
+        ],
+        "delivery_stride": [
+          36,
+          56
+        ],
+        "release_phase": [
+          56,
+          61
+        ],
+        "follow_through": [
+          61,
+          150
+        ]
+      },
+      "key_angles": {
+        "elbow_at_release": 170.74533109589058,
+        "knee_at_ffc": 147.7483073237294,
+        "knee_at_bfc": 154.48577963441588
+      },
+      "durations": {
+        "jump_to_bfc": 

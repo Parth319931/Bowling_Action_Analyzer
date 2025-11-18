@@ -59,7 +59,7 @@ def create_sample_overlays():
         video_dir='data/processed_videos/front_view',
         keypoints_dir='data/keypoints/front_view',
         output_dir='data/overlays/front_view',
-        max_videos=3
+        max_videos=5
     )
     
     # Side view samples
@@ -68,7 +68,7 @@ def create_sample_overlays():
         video_dir='data/processed_videos/side_view',
         keypoints_dir='data/keypoints/side_view',
         output_dir='data/overlays/side_view',
-        max_videos=3
+        max_videos=5
     )
     
     print("\n✅ Sample overlays created!")

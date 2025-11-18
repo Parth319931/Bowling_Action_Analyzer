@@ -1,0 +1,40 @@
+{
+  "video_name": "front Neil wagner -vmake_processed",
+  "csv_path": "data/keypoints/front_view/front Neil wagner -vmake_processed_keypoints.csv",
+  "timestamp": "2025-11-07T17:41:37.142519",
+  "status": "success",
+  "events": {
+    "jump_frame": 5,
+    "back_foot_contact_frame": 21,
+    "front_foot_contact_frame": 43,
+    "ball_release_frame": 60
+  },
+  "phases": {
+    "run_up": [
+      0,
+      5
+    ],
+    "jump_phase": [
+      5,
+      21
+    ],
+    "delivery_stride": [
+      21,
+      43
+    ],
+    "release_phase": [
+      43,
+      60
+    ],
+    "follow_through": [
+      60,
+      276
+    ]
+  },
+  "key_angles": {
+    "elbow_at_release": 154.99694452028243,
+    "knee_at_ffc": 165.59585654258368,
+    "knee_at_bfc": 175.21469663129557
+  },
+  "durations": {
+    "jump_to_bfc": 

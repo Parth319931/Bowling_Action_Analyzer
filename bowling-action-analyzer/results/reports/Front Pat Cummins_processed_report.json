@@ -1,0 +1,40 @@
+{
+  "video_name": "Front Pat Cummins_processed",
+  "csv_path": "data/keypoints/front_view/Front Pat Cummins_processed_keypoints.csv",
+  "timestamp": "2025-11-07T17:41:36.734513",
+  "status": "success",
+  "events": {
+    "jump_frame": 22,
+    "back_foot_contact_frame": 33,
+    "front_foot_contact_frame": 49,
+    "ball_release_frame": 58
+  },
+  "phases": {
+    "run_up": [
+      0,
+      22
+    ],
+    "jump_phase": [
+      22,
+      33
+    ],
+    "delivery_stride": [
+      33,
+      49
+    ],
+    "release_phase": [
+      49,
+      58
+    ],
+    "follow_through": [
+      58,
+      565
+    ]
+  },
+  "key_angles": {
+    "elbow_at_release": 3.272080782293987,
+    "knee_at_ffc": 160.95369934607706,
+    "knee_at_bfc": 167.77968945813564
+  },
+  "durations": {
+    "jump_to_bfc": 

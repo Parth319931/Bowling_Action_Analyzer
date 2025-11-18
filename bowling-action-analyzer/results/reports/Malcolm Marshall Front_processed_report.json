@@ -1,0 +1,40 @@
+{
+  "video_name": "Malcolm Marshall Front_processed",
+  "csv_path": "data/keypoints/front_view/Malcolm Marshall Front_processed_keypoints.csv",
+  "timestamp": "2025-11-07T17:41:32.755573",
+  "status": "success",
+  "events": {
+    "jump_frame": 3,
+    "back_foot_contact_frame": 27,
+    "front_foot_contact_frame": 56,
+    "ball_release_frame": 65
+  },
+  "phases": {
+    "run_up": [
+      0,
+      3
+    ],
+    "jump_phase": [
+      3,
+      27
+    ],
+    "delivery_stride": [
+      27,
+      56
+    ],
+    "release_phase": [
+      56,
+      65
+    ],
+    "follow_through": [
+      65,
+      166
+    ]
+  },
+  "key_angles": {
+    "elbow_at_release": 52.65332539672774,
+    "knee_at_ffc": 169.5920762921094,
+    "knee_at_bfc": 171.08322416596172
+  },
+  "durations": {
+    "jump_to_bfc": 

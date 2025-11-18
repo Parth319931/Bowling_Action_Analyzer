@@ -1,0 +1,40 @@
+{
+  "video_name": "Micheal Holding Front_processed",
+  "csv_path": "data/keypoints/front_view/Micheal Holding Front_processed_keypoints.csv",
+  "timestamp": "2025-11-07T17:41:33.146324",
+  "status": "success",
+  "events": {
+    "jump_frame": 0,
+    "back_foot_contact_frame": 26,
+    "front_foot_contact_frame": 57,
+    "ball_release_frame": 65
+  },
+  "phases": {
+    "run_up": [
+      0,
+      0
+    ],
+    "jump_phase": [
+      0,
+      26
+    ],
+    "delivery_stride": [
+      26,
+      57
+    ],
+    "release_phase": [
+      57,
+      65
+    ],
+    "follow_through": [
+      65,
+      116
+    ]
+  },
+  "key_angles": {
+    "elbow_at_release": 171.3642382980631,
+    "knee_at_ffc": 166.78480004535595,
+    "knee_at_bfc": 178.79530328436863
+  },
+  "durations": {
+    "jump_to_bfc": 

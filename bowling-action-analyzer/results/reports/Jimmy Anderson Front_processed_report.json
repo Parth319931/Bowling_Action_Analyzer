@@ -1,0 +1,40 @@
+{
+  "video_name": "Jimmy Anderson Front_processed",
+  "csv_path": "data/keypoints/front_view/Jimmy Anderson Front_processed_keypoints.csv",
+  "timestamp": "2025-11-07T17:41:32.005292",
+  "status": "success",
+  "events": {
+    "jump_frame": 6,
+    "back_foot_contact_frame": 16,
+    "front_foot_contact_frame": 36,
+    "ball_release_frame": 51
+  },
+  "phases": {
+    "run_up": [
+      0,
+      6
+    ],
+    "jump_phase": [
+      6,
+      16
+    ],
+    "delivery_stride": [
+      16,
+      36
+    ],
+    "release_phase": [
+      36,
+      51
+    ],
+    "follow_through": [
+      51,
+      403
+    ]
+  },
+  "key_angles": {
+    "elbow_at_release": 123.36450658221159,
+    "knee_at_ffc": 176.24651801451526,
+    "knee_at_bfc": 177.3797726560645
+  },
+  "durations": {
+    "jump_to_bfc": 

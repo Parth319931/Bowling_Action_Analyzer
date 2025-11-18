@@ -1,0 +1,40 @@
+{
+  "video_name": "Front Trent boult_processed",
+  "csv_path": "data/keypoints/front_view/Front Trent boult_processed_keypoints.csv",
+  "timestamp": "2025-11-07T17:41:31.683980",
+  "status": "success",
+  "events": {
+    "jump_frame": 17,
+    "back_foot_contact_frame": 44,
+    "front_foot_contact_frame": 61,
+    "ball_release_frame": 67
+  },
+  "phases": {
+    "run_up": [
+      0,
+      17
+    ],
+    "jump_phase": [
+      17,
+      44
+    ],
+    "delivery_stride": [
+      44,
+      61
+    ],
+    "release_phase": [
+      61,
+      67
+    ],
+    "follow_through": [
+      67,
+      170
+    ]
+  },
+  "key_angles": {
+    "elbow_at_release": 9.38677446772315,
+    "knee_at_ffc": 179.48838207654225,
+    "knee_at_bfc": 94.5618754051362
+  },
+  "durations": {
+    "jump_to_bfc": 

@@ -1,0 +1,40 @@
+{
+  "video_name": "Front Adam Milne_processed",
+  "csv_path": "data/keypoints/front_view/Front Adam Milne_processed_keypoints.csv",
+  "timestamp": "2025-11-07T17:41:34.538887",
+  "status": "success",
+  "events": {
+    "jump_frame": 11,
+    "back_foot_contact_frame": 36,
+    "front_foot_contact_frame": 58,
+    "ball_release_frame": 68
+  },
+  "phases": {
+    "run_up": [
+      0,
+      11
+    ],
+    "jump_phase": [
+      11,
+      36
+    ],
+    "delivery_stride": [
+      36,
+      58
+    ],
+    "release_phase": [
+      58,
+      68
+    ],
+    "follow_through": [
+      68,
+      227
+    ]
+  },
+  "key_angles": {
+    "elbow_at_release": 143.27153669062756,
+    "knee_at_ffc": 45.14063402827659,
+    "knee_at_bfc": 174.7270429610765
+  },
+  "durations": {
+    "jump_to_bfc": 

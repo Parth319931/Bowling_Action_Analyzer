@@ -1,0 +1,42 @@
+{
+  "video_name": "Side Trent Boult_processed",
+  "num_frames": 264,
+  "events": {
+    "jump_frame": 6,
+    "back_foot_contact_frame": 34,
+    "front_foot_contact_frame": 192,
+    "ball_release_frame": 213
+  },
+  "durations": {
+    "jump_to_bfc": 28,
+    "bfc_to_ffc": 158,
+    "ffc_to_release": 21
+  },
+  "key_angles": {
+    "elbow_at_release": 168.32491830579477,
+    "knee_at_ffc": 173.34692523373087,
+    "knee_at_bfc": 170.6382835886208
+  },
+  "phases": {
+    "run_up": [
+      0,
+      6
+    ],
+    "jump_phase": [
+      6,
+      34
+    ],
+    "delivery_stride": [
+      34,
+      192
+    ],
+    "release_phase": [
+      192,
+      213
+    ],
+    "follow_through": [
+      213,
+      264
+    ]
+  }
+}

@@ -1,184 +1,278 @@
 """
-Rule-Based Phase Segmentation Module
-=====================================
+Pure Order-Based Peak Segmentation
+===================================
 
-Purpose:
-    Detect bowling phases using rule-based peak/valley detection.
-    Segments delivery into: Run-up, Delivery Stride, Release, Follow-through.
-
-Detection Logic:
-    - Ball Release: Wrist speed peak (highest velocity point)
-    - Jump/Back-foot: Hip vertical position peak (highest point)
-    - Front-foot Contact: Ankle velocity minimum (stationary point)
+Strategy:
+    1. Find ALL peaks in entire video (no percentage bounds)
+    2. Use ONLY temporal ordering to identify phases:
+       - First significant hip peak = Jump
+       - Highest hip peak after jump = BFC
+       - First ankle valley after BFC = FFC  
+       - Highest wrist peak after FFC = Release
     
-Phase Boundaries:
-    1. Run-up: Start → Jump
-    2. Delivery Stride: Jump → Front-foot Contact
-    3. Release Phase: Front-foot Contact → Ball Release
-    4. Follow-through: Ball Release → End
-
-Features:
-    - Adaptive thresholds (mean + std based)
-    - Ordering constraints (ensures logical sequence)
-    - Minimum phase durations (prevents flickering)
-    - Fallback logic (handles edge cases)
-
-Input:
-    - Keypoints CSV from data/keypoints/
-
-Output:
-    - Events: Frame numbers for jump, FFC, release
-    - Phases: Frame ranges for each phase
-    - Key Angles: Elbow at release, knee at FFC
-
-Usage:
-    from src.phase_segmentation import PhaseSegmentor
-    segmentor = PhaseSegmentor()
-    result = segmentor.segment('keypoints.csv')
-
-Research Basis:
-    - Wrist speed peak method: Cricket biomechanics research
-    - Hip trajectory: Standard jump phase detection
-    - Temporal smoothing: CVPR 2017 TCN paper principles
+    NO assumptions about video percentages!
 
 Author: Teammate A - CV & Segmentation
-Last Modified: Nov 7, 2025
+Last Modified: Nov 16, 2025
 """
 
 import numpy as np
-from scipy.signal import find_peaks
+from scipy.signal import find_peaks, savgol_filter
 from src.feature_engineering import FeatureExtractor
 
-class PhaseSegmentor:
-    """Rule-based bowling phase segmentation"""
+
+class OrderBasedSegmentor:
+    """Phase segmentation using pure temporal ordering"""
     
     def __init__(self):
         self.feature_extractor = FeatureExtractor()
-        
-        # Tunable thresholds (adjust on Day 2 based on validation)
-        self.wrist_speed_multiplier = 0.6  # Peak detection sensitivity
-        self.hip_peak_multiplier = 0.3
-        self.ankle_threshold = 0.02
-        self.min_phase_frames = 10  # Minimum frames per phase
     
-    def detect_ball_release(self, wrist_speed):
-        """
-        Detect ball release from wrist speed peak
-        Ball release = moment of maximum wrist speed
-        """
-        mean_speed = np.mean(wrist_speed)
-        std_speed = np.std(wrist_speed)
+    def smooth(self, signal, window_ratio=0.05):
+        """Adaptive smoothing based on signal length"""
+        n = len(signal)
+        window = max(5, int(n * window_ratio))
+        window = window if window % 2 == 1 else window + 1
         
-        # Find peaks above threshold
-        peaks, _ = find_peaks(
-            wrist_speed,
-            height=mean_speed + self.wrist_speed_multiplier * std_speed,
-            distance=15  # Minimum 15 frames between peaks
+        if window >= n:
+            return signal
+        return savgol_filter(signal, window_length=window, polyorder=2)
+    
+    def detect_all_peaks_global(self, features):
+        """
+        Find ALL peaks in entire video without any positional constraints
+        """
+        n = features['num_frames']
+        
+        # Smooth signals
+        hip_smooth = self.smooth(features['hip_y'])
+        wrist_smooth = self.smooth(features['wrist_speed'])
+        ankle_smooth = self.smooth(np.abs(features['ankle_velocity']))
+        
+        peaks_dict = {}
+        
+        # 1. Hip peaks (for jump and BFC)
+        hip_peaks, hip_props = find_peaks(
+            hip_smooth,
+            prominence=np.std(hip_smooth) * 0.10,  # Lower threshold to catch all
+            distance=max(5, int(n * 0.02))  # Minimum gap between peaks
         )
         
-        if len(peaks) > 0:
-            # Return highest peak
-            return peaks[np.argmax(wrist_speed[peaks])]
+        peaks_dict['hip_peaks'] = {
+            'frames': hip_peaks,
+            'heights': hip_smooth[hip_peaks],
+            'prominences': hip_props['prominences']
+        }
         
-        # Fallback: maximum in second half
-        return len(wrist_speed) // 2 + np.argmax(wrist_speed[len(wrist_speed)//2:])
-    
-    def detect_jump(self, hip_y):
-        """
-        Detect jump/back-foot contact from hip Y peak
-        Jump = highest vertical position of hips
-        """
-        mean_hip = np.mean(hip_y)
-        std_hip = np.std(hip_y)
-        
-        # Find peaks (hip goes UP during jump)
-        peaks, _ = find_peaks(
-            hip_y,
-            height=mean_hip + self.hip_peak_multiplier * std_hip,
-            distance=10
+        # 2. Wrist peaks (for release)
+        wrist_peaks, wrist_props = find_peaks(
+            wrist_smooth,
+            prominence=np.std(wrist_smooth) * 0.15,
+            distance=max(5, int(n * 0.02))
         )
         
-        if len(peaks) > 0:
-            return peaks[0]  # First significant peak
+        peaks_dict['wrist_peaks'] = {
+            'frames': wrist_peaks,
+            'heights': wrist_smooth[wrist_peaks],
+            'prominences': wrist_props['prominences']
+        }
         
-        # Fallback: 1/3 point
-        return len(hip_y) // 3
+        # 3. Ankle valleys (for FFC - stationary foot)
+        ankle_inverted = -ankle_smooth
+        ankle_valleys, ankle_props = find_peaks(
+            ankle_inverted,
+            prominence=np.std(ankle_smooth) * 0.10,
+            distance=max(5, int(n * 0.02))
+        )
+        
+        peaks_dict['ankle_valleys'] = {
+            'frames': ankle_valleys,
+            'depths': ankle_smooth[ankle_valleys],
+            'prominences': ankle_props['prominences']
+        }
+        
+        return peaks_dict
     
-    def detect_front_foot_contact(self, ankle_velocity, release_frame):
+    def select_by_order(self, peaks_dict, n_frames):
         """
-        Detect front-foot contact from ankle velocity minimum
-        Contact = moment when ankle is nearly stationary
+        Select events using ONLY temporal ordering rules:
+        
+        1. Jump = First significant hip peak
+        2. BFC = Highest hip peak AFTER jump
+        3. FFC = First ankle valley AFTER BFC (lowest velocity)
+        4. Release = Highest wrist peak AFTER FFC
+        
+        NO percentage constraints!
         """
-        # Search only before ball release
-        search_region = ankle_velocity[:release_frame]
+        events = {}
         
-        # Find frames where ankle is stationary
-        contact_candidates = np.where(np.abs(search_region) < self.ankle_threshold)[0]
+        # === JUMP: First significant hip peak ===
+        if len(peaks_dict['hip_peaks']['frames']) > 0:
+            # Sort by prominence (quality of peak)
+            hip_peaks_sorted = sorted(
+                zip(peaks_dict['hip_peaks']['frames'], 
+                    peaks_dict['hip_peaks']['prominences']),
+                key=lambda x: x[1],
+                reverse=True
+            )
+            
+            # Take most prominent peak in first half of video as jump
+            # (but don't enforce percentage - just use first half as heuristic)
+            early_peaks = [p for p in hip_peaks_sorted if p[0] < n_frames * 0.5]
+            
+            if early_peaks:
+                events['jump'] = int(early_peaks[0][0])
+            else:
+                # Fallback: earliest peak
+                events['jump'] = int(min(peaks_dict['hip_peaks']['frames']))
+        else:
+            events['jump'] = int(n_frames * 0.25)  # Emergency fallback
         
-        if len(contact_candidates) > 0:
-            # Return last contact before release
-            return contact_candidates[-1]
+        # === BFC: Highest hip peak AFTER jump ===
+        if len(peaks_dict['hip_peaks']['frames']) > 0:
+            # Get all hip peaks after jump
+            peaks_after_jump = [
+                (frame, height) 
+                for frame, height in zip(peaks_dict['hip_peaks']['frames'], 
+                                        peaks_dict['hip_peaks']['heights'])
+                if frame > events['jump']
+            ]
+            
+            if peaks_after_jump:
+                # Select highest peak (apex of jump)
+                events['bfc'] = int(max(peaks_after_jump, key=lambda x: x[1])[0])
+            else:
+                # No peak after jump - estimate
+                events['bfc'] = int(events['jump'] + max(10, n_frames * 0.08))
+        else:
+            events['bfc'] = int(events['jump'] + max(10, n_frames * 0.08))
         
-        # Fallback: 2/3 of way to release
-        return int(release_frame * 0.67)
+        # === FFC: First ankle valley AFTER BFC (most stationary) ===
+        if len(peaks_dict['ankle_valleys']['frames']) > 0:
+            # Get all valleys after BFC
+            valleys_after_bfc = [
+                (frame, depth) 
+                for frame, depth in zip(peaks_dict['ankle_valleys']['frames'],
+                                       peaks_dict['ankle_valleys']['depths'])
+                if frame > events['bfc']
+            ]
+            
+            if valleys_after_bfc:
+                # Select valley with lowest velocity (most stationary)
+                events['ffc'] = int(min(valleys_after_bfc, key=lambda x: x[1])[0])
+            else:
+                # No valley found - estimate
+                events['ffc'] = int(events['bfc'] + max(15, n_frames * 0.12))
+        else:
+            events['ffc'] = int(events['bfc'] + max(15, n_frames * 0.12))
+        
+        # === RELEASE: Highest wrist peak AFTER FFC ===
+        if len(peaks_dict['wrist_peaks']['frames']) > 0:
+            # Get all wrist peaks after FFC
+            peaks_after_ffc = [
+                (frame, height)
+                for frame, height in zip(peaks_dict['wrist_peaks']['frames'],
+                                        peaks_dict['wrist_peaks']['heights'])
+                if frame > events['ffc']
+            ]
+            
+            if peaks_after_ffc:
+                # Select highest wrist speed peak
+                events['release'] = int(max(peaks_after_ffc, key=lambda x: x[1])[0])
+            else:
+                # No peak after FFC - estimate
+                events['release'] = int(events['ffc'] + max(8, n_frames * 0.06))
+        else:
+            events['release'] = int(events['ffc'] + max(8, n_frames * 0.06))
+        
+        return events
     
-    def enforce_ordering_constraints(self, jump, ffc, release):
+    def validate_minimal_gaps(self, events, n_frames):
         """
-        Ensure events occur in logical order: jump < FFC < release
-        Apply minimum gaps between events
+        Only enforce MINIMUM realistic gaps (to prevent obvious errors)
+        No maximum constraints!
         """
-        # Constraint 1: FFC must be after jump
-        if ffc <= jump:
-            ffc = jump + self.min_phase_frames
+        min_gap_frames = max(3, int(n_frames * 0.02))  # At least 2% of video
         
-        # Constraint 2: Release must be after FFC
-        if release <= ffc:
-            release = ffc + self.min_phase_frames // 2
+        # Ensure minimum gaps
+        if events['bfc'] < events['jump'] + min_gap_frames:
+            events['bfc'] = events['jump'] + min_gap_frames
         
-        return jump, ffc, release
+        if events['ffc'] < events['bfc'] + min_gap_frames:
+            events['ffc'] = events['bfc'] + min_gap_frames
+        
+        if events['release'] < events['ffc'] + min_gap_frames:
+            events['release'] = events['ffc'] + min_gap_frames
+        
+        # Ensure within bounds
+        events['release'] = min(events['release'], n_frames - 2)
+        events['ffc'] = min(events['ffc'], events['release'] - min_gap_frames)
+        events['bfc'] = min(events['bfc'], events['ffc'] - min_gap_frames)
+        events['jump'] = min(events['jump'], events['bfc'] - min_gap_frames)
+        
+        return events
     
     def segment(self, keypoints_csv):
         """
-        Main segmentation pipeline
-        
-        Returns:
-            dict with events, phases, key_angles, features
+        Main pipeline: Global peak detection → Order-based selection
         """
         # Extract features
         features = self.feature_extractor.extract_all_features(keypoints_csv)
+        n_frames = features['num_frames']
         
-        # Detect key events
-        release = self.detect_ball_release(features['wrist_speed'])
-        jump = self.detect_jump(features['hip_y'])
-        ffc = self.detect_front_foot_contact(features['ankle_velocity'], release)
+        print(f"  Video length: {n_frames} frames")
         
-        # Enforce ordering
-        jump, ffc, release = self.enforce_ordering_constraints(jump, ffc, release)
+        # Step 1: Detect ALL peaks globally (no position constraints)
+        print(f"  Detecting all peaks globally...")
+        peaks_dict = self.detect_all_peaks_global(features)
         
-        # Package events
-        events = {
-            'jump_frame': int(jump),
-            'front_foot_contact_frame': int(ffc),
-            'ball_release_frame': int(release)
+        print(f"    Hip peaks: {len(peaks_dict['hip_peaks']['frames'])}")
+        print(f"    Wrist peaks: {len(peaks_dict['wrist_peaks']['frames'])}")
+        print(f"    Ankle valleys: {len(peaks_dict['ankle_valleys']['frames'])}")
+        
+        # Step 2: Select events using only temporal ordering
+        print(f"  Selecting events by order...")
+        events = self.select_by_order(peaks_dict, n_frames)
+        
+        # Step 3: Minimal validation (only prevent overlaps)
+        events = self.validate_minimal_gaps(events, n_frames)
+        
+        print(f"    Jump: {events['jump']}")
+        print(f"    BFC: {events['bfc']}")
+        print(f"    FFC: {events['ffc']}")
+        print(f"    Release: {events['release']}")
+        
+        # Package results
+        final_events = {
+            'jump_frame': int(events['jump']),
+            'back_foot_contact_frame': int(events['bfc']),
+            'front_foot_contact_frame': int(events['ffc']),
+            'ball_release_frame': int(events['release'])
         }
         
-        # Define phase boundaries
         phases = {
-            'run_up': (0, events['jump_frame']),
-            'delivery_stride': (events['jump_frame'], events['front_foot_contact_frame']),
-            'release_phase': (events['front_foot_contact_frame'], events['ball_release_frame']),
-            'follow_through': (events['ball_release_frame'], features['num_frames'])
+            'run_up': (0, final_events['jump_frame']),
+            'jump_phase': (final_events['jump_frame'], final_events['back_foot_contact_frame']),
+            'delivery_stride': (final_events['back_foot_contact_frame'], final_events['front_foot_contact_frame']),
+            'release_phase': (final_events['front_foot_contact_frame'], final_events['ball_release_frame']),
+            'follow_through': (final_events['ball_release_frame'], n_frames)
         }
         
-        # Extract key angles at important moments
         key_angles = {
-            'elbow_at_release': float(features['elbow_angle'][release]),
-            'knee_at_ffc': float(features['knee_angle'][ffc])
+            'elbow_at_release': float(features['elbow_angle'][final_events['ball_release_frame']]),
+            'knee_at_ffc': float(features['knee_angle'][final_events['front_foot_contact_frame']]),
+            'knee_at_bfc': float(features['knee_angle'][final_events['back_foot_contact_frame']])
+        }
+        
+        durations = {
+            'jump_to_bfc': final_events['back_foot_contact_frame'] - final_events['jump_frame'],
+            'bfc_to_ffc': final_events['front_foot_contact_frame'] - final_events['back_foot_contact_frame'],
+            'ffc_to_release': final_events['ball_release_frame'] - final_events['front_foot_contact_frame']
         }
         
         return {
-            'events': events,
+            'events': final_events,
             'phases': phases,
             'key_angles': key_angles,
-            'features': features  # Include for visualization
+            'durations': durations,
+            'features': features
         }

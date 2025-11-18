@@ -1,0 +1,40 @@
+{
+  "video_name": "Front Josh  Hazlewood_processed",
+  "csv_path": "data/keypoints/front_view/Front Josh  Hazlewood_processed_keypoints.csv",
+  "timestamp": "2025-11-07T17:41:35.285458",
+  "status": "success",
+  "events": {
+    "jump_frame": 0,
+    "back_foot_contact_frame": 29,
+    "front_foot_contact_frame": 45,
+    "ball_release_frame": 62
+  },
+  "phases": {
+    "run_up": [
+      0,
+      0
+    ],
+    "jump_phase": [
+      0,
+      29
+    ],
+    "delivery_stride": [
+      29,
+      45
+    ],
+    "release_phase": [
+      45,
+      62
+    ],
+    "follow_through": [
+      62,
+      439
+    ]
+  },
+  "key_angles": {
+    "elbow_at_release": 32.681867589997864,
+    "knee_at_ffc": 101.1207962870202,
+    "knee_at_bfc": 69.48425556040972
+  },
+  "durations": {
+    "jump_to_bfc": 

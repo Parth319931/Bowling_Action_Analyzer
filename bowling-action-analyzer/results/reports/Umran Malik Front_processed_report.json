@@ -1,0 +1,40 @@
+{
+  "video_name": "Umran Malik Front_processed",
+  "csv_path": "data/keypoints/front_view/Umran Malik Front_processed_keypoints.csv",
+  "timestamp": "2025-11-07T17:41:34.183317",
+  "status": "success",
+  "events": {
+    "jump_frame": 7,
+    "back_foot_contact_frame": 17,
+    "front_foot_contact_frame": 50,
+    "ball_release_frame": 58
+  },
+  "phases": {
+    "run_up": [
+      0,
+      7
+    ],
+    "jump_phase": [
+      7,
+      17
+    ],
+    "delivery_stride": [
+      17,
+      50
+    ],
+    "release_phase": [
+      50,
+      58
+    ],
+    "follow_through": [
+      58,
+      299
+    ]
+  },
+  "key_angles": {
+    "elbow_at_release": 145.47911757712015,
+    "knee_at_ffc": 170.08508291419523,
+    "knee_at_bfc": 166.17665672781533
+  },
+  "durations": {
+    "jump_to_bfc": 

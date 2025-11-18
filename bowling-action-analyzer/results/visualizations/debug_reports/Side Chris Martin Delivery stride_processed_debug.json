@@ -1,0 +1,42 @@
+{
+  "video_name": "Side Chris Martin Delivery stride_processed",
+  "num_frames": 226,
+  "events": {
+    "jump_frame": 5,
+    "back_foot_contact_frame": 166,
+    "front_foot_contact_frame": 210,
+    "ball_release_frame": 223
+  },
+  "durations": {
+    "jump_to_bfc": 161,
+    "bfc_to_ffc": 44,
+    "ffc_to_release": 13
+  },
+  "key_angles": {
+    "elbow_at_release": 177.15157186859955,
+    "knee_at_ffc": 146.54825865353214,
+    "knee_at_bfc": 152.36630382615039
+  },
+  "phases": {
+    "run_up": [
+      0,
+      5
+    ],
+    "jump_phase": [
+      5,
+      166
+    ],
+    "delivery_stride": [
+      166,
+      210
+    ],
+    "release_phase": [
+      210,
+      223
+    ],
+    "follow_through": [
+      223,
+      226
+    ]
+  }
+}

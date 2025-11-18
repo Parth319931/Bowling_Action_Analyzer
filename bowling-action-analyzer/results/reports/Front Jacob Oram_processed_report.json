@@ -1,0 +1,40 @@
+{
+  "video_name": "Front Jacob Oram_processed",
+  "csv_path": "data/keypoints/front_view/Front Jacob Oram_processed_keypoints.csv",
+  "timestamp": "2025-11-07T17:41:34.872180",
+  "status": "success",
+  "events": {
+    "jump_frame": 0,
+    "back_foot_contact_frame": 29,
+    "front_foot_contact_frame": 45,
+    "ball_release_frame": 58
+  },
+  "phases": {
+    "run_up": [
+      0,
+      0
+    ],
+    "jump_phase": [
+      0,
+      29
+    ],
+    "delivery_stride": [
+      29,
+      45
+    ],
+    "release_phase": [
+      45,
+      58
+    ],
+    "follow_through": [
+      58,
+      199
+    ]
+  },
+  "key_angles": {
+    "elbow_at_release": 49.620686031983674,
+    "knee_at_ffc": 178.6162431079534,
+    "knee_at_bfc": 177.5957746421783
+  },
+  "durations": {
+    "jump_to_bfc": 

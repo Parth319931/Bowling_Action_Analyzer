@@ -1,0 +1,40 @@
+{
+  "video_name": "Jofra Archer Front_processed",
+  "csv_path": "data/keypoints/front_view/Jofra Archer Front_processed_keypoints.csv",
+  "timestamp": "2025-11-07T17:41:32.389936",
+  "status": "success",
+  "events": {
+    "jump_frame": 16,
+    "back_foot_contact_frame": 26,
+    "front_foot_contact_frame": 49,
+    "ball_release_frame": 60
+  },
+  "phases": {
+    "run_up": [
+      0,
+      16
+    ],
+    "jump_phase": [
+      16,
+      26
+    ],
+    "delivery_stride": [
+      26,
+      49
+    ],
+    "release_phase": [
+      49,
+      60
+    ],
+    "follow_through": [
+      60,
+      449
+    ]
+  },
+  "key_angles": {
+    "elbow_at_release": 149.88218677794518,
+    "knee_at_ffc": 0.8930177231410816,
+    "knee_at_bfc": 170.17570168243404
+  },
+  "durations": {
+    "jump_to_bfc": 

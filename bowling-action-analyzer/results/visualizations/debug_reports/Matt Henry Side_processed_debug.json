@@ -1,0 +1,42 @@
+{
+  "video_name": "Matt Henry Side_processed",
+  "num_frames": 328,
+  "events": {
+    "jump_frame": 118,
+    "back_foot_contact_frame": 240,
+    "front_foot_contact_frame": 246,
+    "ball_release_frame": 303
+  },
+  "durations": {
+    "jump_to_bfc": 122,
+    "bfc_to_ffc": 6,
+    "ffc_to_release": 57
+  },
+  "key_angles": {
+    "elbow_at_release": 123.99457661907846,
+    "knee_at_ffc": 173.44702250552461,
+    "knee_at_bfc": 145.32604501887946
+  },
+  "phases": {
+    "run_up": [
+      0,
+      118
+    ],
+    "jump_phase": [
+      118,
+      240
+    ],
+    "delivery_stride": [
+      240,
+      246
+    ],
+    "release_phase": [
+      246,
+      303
+    ],
+    "follow_through": [
+      303,
+      328
+    ]
+  }
+}

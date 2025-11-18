@@ -1,0 +1,40 @@
+{
+  "video_name": "Shane Bond Front_processed",
+  "csv_path": "data/keypoints/front_view/Shane Bond Front_processed_keypoints.csv",
+  "timestamp": "2025-11-07T17:41:33.873218",
+  "status": "success",
+  "events": {
+    "jump_frame": 2,
+    "back_foot_contact_frame": 31,
+    "front_foot_contact_frame": 61,
+    "ball_release_frame": 69
+  },
+  "phases": {
+    "run_up": [
+      0,
+      2
+    ],
+    "jump_phase": [
+      2,
+      31
+    ],
+    "delivery_stride": [
+      31,
+      61
+    ],
+    "release_phase": [
+      61,
+      69
+    ],
+    "follow_through": [
+      69,
+      146
+    ]
+  },
+  "key_angles": {
+    "elbow_at_release": 178.2247044982826,
+    "knee_at_ffc": 171.3973977170188,
+    "knee_at_bfc": 178.1658115043247
+  },
+  "durations": {
+    "jump_to_bfc": 
